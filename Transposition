@@ -1,0 +1,58 @@
+import java.util.Scanner;
+public class RailFenceCipher {    
+    // Encryption function
+    public static String encrypt(String plainText, int rails) {
+        StringBuilder[] fence = new StringBuilder[rails];
+        for (int i = 0; i < rails; i++) {
+            fence[i] = new StringBuilder();
+        }
+        
+        int rail = 0;
+        boolean down = true;
+        for (char c : plainText.toCharArray()) {
+            fence[rail].append(c);
+            if (down) {
+                rail++;
+                if (rail == rails - 1) {
+                    down = false;
+                }
+            } else {
+                rail--;
+                if (rail == 0) {
+                    down = true;
+                }
+            }
+        }
+        
+        StringBuilder cipherText = new StringBuilder();
+        for (StringBuilder row : fence) {
+            cipherText.append(row);
+        }
+        return cipherText.toString();
+    }
+    
+    // Main method
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        // Get plaintext input from the user
+        System.out.print("Enter the plaintext: ");
+        String plainText = scanner.nextLine();
+        
+        // Get number of rails input from the user
+        System.out.print("Enter the number of rails: ");
+        int rails = scanner.nextInt();
+        
+        // Encrypt the plaintext using the Rail Fence Cipher
+        String cipherText = encrypt(plainText, rails);
+        System.out.println("Encrypted text: " + cipherText);
+        
+        scanner.close();
+    }
+}
+
+
+
+Enter the plaintext: Happyday
+Enter the number of rails: 3
+Encrypted text: Hyapdypa
