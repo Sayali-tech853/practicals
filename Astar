@@ -1,0 +1,143 @@
+
+import java.util.*;
+
+class graph {
+    private Map<String, List<Pair<String, Integer>>> adjacencyList = new HashMap<>();
+
+    public void addEdge(String node, String neighbor, int weight) {
+        adjacencyList.computeIfAbsent(node, k -> new ArrayList<>()).add(new Pair<>(neighbor, weight));
+    }
+
+    public List<Pair<String, Integer>> getNeighbors(String v) {
+        return adjacencyList.getOrDefault(v, new ArrayList<>());
+    }
+
+    public int h(String n) {
+        Map<String, Integer> H = new HashMap<>();
+        H.put("A", 11);
+        H.put("B", 6);
+        H.put("C", 99);
+        H.put("D", 1);
+        H.put("E", 7);
+        H.put("G", 0);
+        return H.getOrDefault(n, 0);
+    }
+
+    public List<String> aStarAlgorithm(String startNode, String stopNode) {
+        Set<String> openList = new HashSet<>();
+        Set<String> closedList = new HashSet<>();
+        Map<String, Integer> g = new HashMap<>();
+        Map<String, String> parents = new HashMap<>();
+
+        openList.add(startNode);
+        g.put(startNode, 0);
+        parents.put(startNode, startNode);
+
+        while (!openList.isEmpty()) {
+            String n = null;
+            for (String v : openList) {
+                if (n == null || g.getOrDefault(v, 0) + h(v) < g.getOrDefault(n, 0) + h(n)) {
+                    n = v;
+                }
+            }
+
+            if (n == null) {
+                System.out.println("Path does not exist!");
+                return null;
+            }
+
+            if (n.equals(stopNode)) {
+                List<String> reconstructedPath = new ArrayList<>();
+                while (!parents.get(n).equals(n)) {
+                    reconstructedPath.add(n);
+                    n = parents.get(n);
+                }
+                reconstructedPath.add(startNode);
+                Collections.reverse(reconstructedPath);
+                System.out.println("Path found: " + reconstructedPath);
+                return reconstructedPath;
+            }
+
+            for (Pair<String, Integer> pair : getNeighbors(n)) {
+                String m = pair.getKey();
+                int weight = pair.getValue();
+
+                if (!openList.contains(m) && !closedList.contains(m)) {
+                    openList.add(m);
+                    parents.put(m, n);
+                    g.put(m, g.getOrDefault(n, 0) + weight);
+                } else {
+                    if (g.getOrDefault(m, 0) > g.getOrDefault(n, 0) + weight) {
+                        g.put(m, g.getOrDefault(n, 0) + weight);
+                        parents.put(m, n);
+                    }
+                }
+            }
+
+            openList.remove(n);
+            closedList.add(n);
+        }
+
+        System.out.println("Path does not exist!");
+        return null;
+    }
+
+    static class Pair<K, V> {
+        private final K key;
+        private final V value;
+
+        Pair(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        K getKey() {
+            return key;
+        }
+
+        V getValue() {
+            return value;
+        }
+    }
+}
+
+ class abc {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        graph Graph = new graph();
+
+        System.out.print("Enter the number of edges: ");
+        int numEdges = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        for (int i = 0; i < numEdges; i++) {
+            System.out.print("Enter edge (node neighbor weight): ");
+            String[] input = scanner.nextLine().split(" ");
+            Graph.addEdge(input[0], input[1], Integer.parseInt(input[2]));
+        }
+
+        System.out.print("Enter the start node: ");
+        String startNode = scanner.nextLine();
+        System.out.print("Enter the goal node: ");
+        String goalNode = scanner.nextLine();
+
+        Graph.aStarAlgorithm(startNode, goalNode);
+    }
+}
+
+
+
+
+Enter the number of edges: 8
+Enter edge (node neighbor weight): A B 2
+Enter edge (node neighbor weight): A D 3
+Enter edge (node neighbor weight): B C 1
+Enter edge (node neighbor weight): D E 1
+Enter edge (node neighbor weight): D G 1
+Enter edge (node neighbor weight): E G 7
+Enter edge (node neighbor weight): E D 6
+Enter edge (node neighbor weight): G B 9
+Enter the start node: A
+Enter the goal node: G
+Path found: [A, D, G]
