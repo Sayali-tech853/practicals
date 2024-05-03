@@ -1,0 +1,47 @@
+
+import java.math.BigInteger;
+import java.util.Scanner;
+
+import java.math.BigInteger;
+import java.util.Scanner;
+
+public class RSAEncryptionExample {
+    public static void main(String[] args) {
+        // User input
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter plaintext number (as BigInteger): ");
+        BigInteger plaintext = scanner.nextBigInteger();
+        System.out.print("Enter prime number p: ");
+        BigInteger p = scanner.nextBigInteger();
+        System.out.print("Enter prime number q: ");
+        BigInteger q = scanner.nextBigInteger();
+        System.out.print("Enter public key exponent e: ");
+        BigInteger e = scanner.nextBigInteger();
+        scanner.close();
+
+        // Calculate n and phi(n)
+        BigInteger n = p.multiply(q);
+        BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
+
+        // Calculate the private key exponent d
+        BigInteger d = e.modInverse(phi);
+
+        // Encrypt the message
+        BigInteger ciphertext = plaintext.modPow(e, n);
+        System.out.println("Encrypted message (ciphertext): " + ciphertext);
+
+        // Decrypt the message
+        BigInteger decrypted = ciphertext.modPow(d, n);
+        System.out.println("Decrypted message (plaintext): " + decrypted);
+    }
+}
+
+
+
+
+Enter plaintext number (as BigInteger): 85
+Enter prime number p: 7
+Enter prime number q: 23
+Enter public key exponent e: 65537
+Encrypted message (ciphertext): 36
+Decrypted message (plaintext): 85
